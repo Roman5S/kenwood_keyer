@@ -80,3 +80,6 @@ CMakeLists.txt.user*
 .rcc/
 .uic/
 /build*/
+
+!Compiled_App64/*
+!Compiled_App64/*/*
