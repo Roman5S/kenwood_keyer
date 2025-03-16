@@ -12,7 +12,9 @@ public:
     QSerialPort *port;
     void setupPort(QString name, qint32 baud, bool stopBits, bool flowcontrol);
     QByteArray message;
+    bool isSending;
     void send(QByteArray data);
+    QByteArray buffer;
 
 private slots:
     void read();

@@ -45,7 +45,6 @@ private:
 private slots:
     //void readCurrSettings();
     void saveSettings();
-    //void sendThrough(serialTRX *trx1, serialTRX *trx2);
     void start();
 
 signals:

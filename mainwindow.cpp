@@ -33,10 +33,15 @@ MainWindow::MainWindow(QWidget *parent)
     dsr = false;
 
     connect(vTRX, &serialTRX::received, this, [=] () {
-        pTRX->send(vTRX->message);
+        if (!vTRX->message.isEmpty() && vTRX->message.mid(vTRX->message.size()-1, 1)==";")
+        {
+            pTRX->send(vTRX->message);
+            vTRX->message.clear();
+        }
     });
     connect(pTRX, &serialTRX::received, this, [=] () {
-        vTRX->send(pTRX->message);
+            vTRX->send(pTRX->message);
+            pTRX->message.clear();
     });
 
     connect(this, &MainWindow::ctsChanged, this, [=] (){
@@ -50,9 +55,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::dsrChanged, this, [=] (){
         if (!cwPin)
         {
-            if (vTRX->port->isDataTerminalReady()) pTRX->send("TX;");
+            if (dsr) pTRX->send("TX;");
             else pTRX->send("RX;");
-            qDebug("dtr");
+            //qDebug("dtr");
         }
     });
 
@@ -69,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
         {
             dsr = sgn.testFlag(QSerialPort::DataSetReadySignal);
             emit dsrChanged();
-            qDebug("DSR ch");
+            //qDebug("DSR ch");
         }
     });
 
@@ -155,10 +160,7 @@ void MainWindow::saveSettings()
     qs->sync();
 }
 
-/*void MainWindow::sendThrough(serialTRX *trx1, serialTRX *trx2)
-{
-    trx2->send(trx1->message);
-}*/
+
 
 void MainWindow::start()
 {
