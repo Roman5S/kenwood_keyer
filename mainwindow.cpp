@@ -102,8 +102,25 @@ void MainWindow::readCurrSettings()
 
     qint32 interval = 1000/baud;
     pinCheckTmr->setInterval(interval);
+
+    bool opened = false;
+    if (vTRX->port->isOpen() || pTRX->port->isOpen())
+    {
+        opened = true;
+        pinCheckTmr->stop();
+        vTRX->port->close();
+        pTRX->port->close();
+    }
+
     vTRX->setupPort(vPortName, baud, stopBits, true);
     pTRX->setupPort(pPortName, baud, stopBits, flowcontrol);
+
+    if (opened)
+    {
+        vTRX->buffer="";
+        pTRX->buffer="";
+        start();
+    }
 }
 
 void MainWindow::openPath(QString path)
